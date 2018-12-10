@@ -23,15 +23,35 @@ def move():
                 next[0] = 0
             else:
                 next[0] = last[0] + 1
+        elif direction == "left":
+            if last[0] - 1 == -1:
+
+                next[0] = 7
+            else:
+                next[0] = last[0] - 1
+        elif direction == "down":
+            if last[1] + 1 == 8:
+                next[1] = 0
+            else:
+                next[1] = last[1] + 1
+        elif direction == "up":
+            if last[1] - 1 == -1:
+                next[1] = 7
+            else:
+                next[1] = last[1] - 1
         slug.append(next)
         sense.set_pixel(next[0], next[1], w)
         sense.set_pixel(first[0], first[1], blank)
         slug.remove(first)
         draw_slug()
         sleep(0.3)
+def joystick_moved(event):
+    global direction
+    direction = event.direction
 # Main program ------------------------
 sense.clear()
 draw_slug
 sleep(0.1)
+sense.stick.direction_any = joystick_moved
 move()
 
