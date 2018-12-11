@@ -6,6 +6,7 @@ sense = SenseHat()
 
 # Variables ---------------------------
 w = (255,255,255)
+r = (255,0,0)
 slug = [[2,4],[3,4],[4,4]]
 direction = "right"
 blank = (0,0,0)
@@ -48,10 +49,18 @@ def move():
 def joystick_moved(event):
     global direction
     direction = event.direction
+def make_veg():
+    x = randint(0,7)
+    y = randint(0,7)
+    while [x,y] in slug:
+        x = randint(0,7)
+        y = randint(0,7)
+    sense.set_pixel(x,y,r)
 # Main program ------------------------
 sense.clear()
 draw_slug
 sleep(0.1)
 sense.stick.direction_any = joystick_moved
+make_veg()
 move()
 
