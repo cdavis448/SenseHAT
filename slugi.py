@@ -17,7 +17,11 @@ def draw_slug():
     for i in slug:
         sense.set_pixel(i[0],i[1],w)
 def move():
+    global score
+    remove = True
     while True:
+        if len(vegan) < 5:
+            make_veg()
         last = slug[-1]
         first = slug[0]
         next = list(last)
@@ -44,14 +48,18 @@ def move():
                 next[1] = last[1] - 1
         slug.append(next)
         sense.set_pixel(next[0], next[1], w)
-        sense.set_pixel(first[0], first[1], blank)
-        slug.remove(first)
+        if remove == True:
+            sense.set_pixel(first[0], first[1], blank)
+            slug.remove(first)
         draw_slug()
-        if len(vegan) < 5:
-            make_veg()
+        
         if [next[0],next[1]] in vegan:
             vegan.remove([next[0],next[1]])
-            score =+ 1
+            score = score + 1
+            if score % 2 == 0:
+                remove = False
+            else:
+                remove = True
         sleep(0.15)
 def joystick_moved(event):
     global direction
@@ -63,7 +71,7 @@ def make_veg():
         x = randint(0,7)
         y = randint(0,7)
         sense.set_pixel(x,y,r)
-        vegan.append([x,y])
+    vegan.append([x,y])
 
 # Main program ------------------------
 sense.clear()
