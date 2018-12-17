@@ -7,13 +7,18 @@ sense = SenseHat()
 # Variables ---------------------------
 w = (255,255,255)
 r = (255,0,0)
-slug = [[2,4],[3,4],[4,4]]
-direction = "right"
+b = (0,0,255)
+g = (0,255,0)
+slug = [[2,4],[3,4]]
+trail = [[1,4],[1,4],[1,4],[1,4]]
+direction = "up"
 blank = (0,0,0)
 vegan=[]
 score = 0
 pause = 0.15
 dead = True
+breed = 0
+
 # Functions ---------------------------
 def draw_slug():
     for i in slug:
@@ -22,12 +27,15 @@ def move():
     global score
     global pause
     global dead
-    remove = True
+    global direction
+    remove = False
+    
     while True:
-        if True == True:
+        if dead == True:   
             last = slug[-1]
             first = slug[0]
             next = list(last)
+            
             if direction == "right":
                 if last[0] + 1 == 8:
                     next[0] = 0
@@ -49,6 +57,10 @@ def move():
                     next[1] = 7
                 else:
                     next[1] = last[1] - 1
+            elif direction == "middle":
+                direction = "up"
+            if next in slug:
+                dead = False
             slug.append(next)
             sense.set_pixel(next[0], next[1], w)
             if remove == True:
@@ -56,8 +68,7 @@ def move():
                 slug.remove(first)
             draw_slug()
         
-            if [next[0],next[1]] in slug:
-                dead = False
+            
             if [next[0],next[1]] in vegan:
                 vegan.remove([next[0],next[1]])
                 score = score + 1
@@ -71,19 +82,27 @@ def move():
             sleep(pause)
             if len(vegan) < 5:
                 make_veg()
+        else:
+            sense.show_message(str(score) + " points")
+        lastmove = direction
 def joystick_moved(event):
     global direction
     direction = event.direction
 def make_veg():
+    global breed
+    breed = randint(0,5)
     if randint(1,10) / 10 > 7/10:
         x = randint(0,7)
         y = randint(0,7)
         food = [x,y]
-        if food in slug:
+        if food in slug or trail:
             if len(vegan) < 5:
                 x = randint(0,7)
                 y = randint(0,7)
-        sense.set_pixel(x,y,r)     
+        if breed == 0:
+            sense.set_pixel(x,y,b)
+        else:
+            sense.set_pixel(x,y,r)     
         vegan.append([x,y])
 
 # Main program ------------------------
