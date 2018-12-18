@@ -9,7 +9,11 @@ w = (255,255,255)
 r = (255,0,0)
 b = (0,0,255)
 g = (0,255,0)
-slug = [[2,4],[3,4]]
+p = (255,0,255)
+t = (0,255,255)
+o = (160,82,45)
+b = (165,42,42)
+slug = [[2,4]]
 trail = [[1,4],[1,4],[1,4],[1,4]]
 direction = "up"
 blank = (0,0,0)
@@ -18,6 +22,7 @@ score = 0
 pause = 0.15
 dead = True
 breed = 0
+lastmove = "up"
 
 # Functions ---------------------------
 def draw_slug():
@@ -28,7 +33,9 @@ def move():
     global pause
     global dead
     global direction
-    remove = False
+    global lastmove
+    remove = True
+    
     
     while True:
         if dead == True:   
@@ -36,29 +43,57 @@ def move():
             first = slug[0]
             next = list(last)
             
-            if direction == "right":
+            if direction == "middle":
+                if lastmove == "right":
+                    lastmove = "right"
+                    if last[0] + 1 == 8:
+                        next[0] = 0
+                    else:
+                        next[0] = last[0] + 1
+                elif lastmove == "left":
+                    lastmove = "left"
+                    if last[0] - 1 == -1:
+                        next[0] = 7
+                    else:
+                        next[0] = last[0] - 1
+                elif lastmove == "down":
+                    lastmove = "down"
+                    if last[1] + 1 == 8:
+                        next[1] = 0
+                    else:
+                        next[1] = last[1] + 1
+                elif lastmove == "up":
+                    lastmove = "up"
+                    if last[1] - 1 == -1:
+                        next[1] = 7
+                    else:
+                        next[1] = last[1] - 1
+            elif direction == "right":
+                lastmove = "right"
                 if last[0] + 1 == 8:
                     next[0] = 0
                 else:
                     next[0] = last[0] + 1
             elif direction == "left":
+                lastmove = "left"
                 if last[0] - 1 == -1:
 
                     next[0] = 7
                 else:
                     next[0] = last[0] - 1
             elif direction == "down":
+                lastmove = "down"
                 if last[1] + 1 == 8:
                     next[1] = 0
                 else:
                     next[1] = last[1] + 1
             elif direction == "up":
+                lastmove = "up"
                 if last[1] - 1 == -1:
                     next[1] = 7
                 else:
                     next[1] = last[1] - 1
-            elif direction == "middle":
-                direction = "up"
+            
             if next in slug:
                 dead = False
             slug.append(next)
@@ -90,16 +125,26 @@ def joystick_moved(event):
     direction = event.direction
 def make_veg():
     global breed
-    breed = randint(0,5)
+    breed = randint(0,6)
     if randint(1,10) / 10 > 7/10:
         x = randint(0,7)
         y = randint(0,7)
         food = [x,y]
-        if food in slug or trail:
+        if food in slug or vegan:
             if len(vegan) < 5:
                 x = randint(0,7)
                 y = randint(0,7)
         if breed == 0:
+            sense.set_pixel(x,y,b)
+        elif breed == 1:
+            sense.set_pixel(x,y,g)
+        elif breed == 2:
+            sense.set_pixel(x,y,p)
+        elif breed == 3:
+            sense.set_pixel(x,y,t)
+        elif breed == 4:
+            sense.set_pixel(x,y,o)
+        elif breed == 5:
             sense.set_pixel(x,y,b)
         else:
             sense.set_pixel(x,y,r)     
